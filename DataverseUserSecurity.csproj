@@ -259,6 +259,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="DataverseUserSecurity.1.2025.1.nupkg" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

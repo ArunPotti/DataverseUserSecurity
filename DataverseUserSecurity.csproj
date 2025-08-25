@@ -263,6 +263,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataverseUserSecurity.1.2025.1 - Copy.txt" />
     <Content Include="Resources\close.png" />
     <Content Include="Resources\csv.png" />
     <Content Include="Resources\data-processing.png" />

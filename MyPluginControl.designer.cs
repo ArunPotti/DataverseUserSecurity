@@ -58,7 +58,7 @@
             this.tsbExport});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(1991, 38);
+            this.toolStripMenu.Size = new System.Drawing.Size(1991, 34);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -66,53 +66,53 @@
             // 
             this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
             this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(83, 33);
+            this.tsbClose.Size = new System.Drawing.Size(83, 29);
             this.tsbClose.Text = "Close";
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
             // tssSeparator1
             // 
             this.tssSeparator1.Name = "tssSeparator1";
-            this.tssSeparator1.Size = new System.Drawing.Size(6, 38);
+            this.tssSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // tsbLoadData
             // 
             this.tsbLoadData.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoadData.Image")));
             this.tsbLoadData.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbLoadData.Name = "tsbLoadData";
-            this.tsbLoadData.Size = new System.Drawing.Size(121, 33);
+            this.tsbLoadData.Size = new System.Drawing.Size(121, 29);
             this.tsbLoadData.Text = "Load Data";
             this.tsbLoadData.Click += new System.EventHandler(this.tsbLoadData_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 38);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // tsbLblSearch
             // 
             this.tsbLblSearch.Name = "tsbLblSearch";
-            this.tsbLblSearch.Size = new System.Drawing.Size(64, 33);
+            this.tsbLblSearch.Size = new System.Drawing.Size(64, 29);
             this.tsbLblSearch.Text = "Search";
             // 
             // tsbTxtSearch
             // 
             this.tsbTxtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbTxtSearch.Name = "tsbTxtSearch";
-            this.tsbTxtSearch.Size = new System.Drawing.Size(400, 38);
+            this.tsbTxtSearch.Size = new System.Drawing.Size(400, 34);
             this.tsbTxtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tsbTxtSearch_KeyUp);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 38);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 34);
             // 
             // tsbExport
             // 
             this.tsbExport.Image = ((System.Drawing.Image)(resources.GetObject("tsbExport.Image")));
             this.tsbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbExport.Name = "tsbExport";
-            this.tsbExport.Size = new System.Drawing.Size(91, 33);
+            this.tsbExport.Size = new System.Drawing.Size(91, 29);
             this.tsbExport.Text = "Export";
             this.tsbExport.Click += new System.EventHandler(this.tsbExport_Click);
             // 

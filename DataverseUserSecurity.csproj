@@ -259,11 +259,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="DataverseUserSecurity.1.2025.1.nupkg" />
+    <None Include="Nuget Packages\DataverseUserSecurity.1.2025.1.1.nupkg" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DataverseUserSecurity.1.2025.1 - Copy.txt" />
+    <Content Include="Resources\ArunPotti_Logo_64X64.png" />
     <Content Include="Resources\close.png" />
     <Content Include="Resources\csv.png" />
     <Content Include="Resources\data-processing.png" />
@@ -284,6 +284,21 @@
   move /Y DataverseUserSecurity.dll Plugins
   move /Y DataverseUserSecurity.pdb Plugins
 )</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PackageLicenseFile>license.md</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="license.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="readme.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PackageIcon>Resources\ArunPotti_Logo_64X64.png</PackageIcon>
   </PropertyGroup>
   <Import Project="packages\Microsoft.Web.WebView2.1.0.3351.48\build\Microsoft.Web.WebView2.targets" Condition="Exists('packages\Microsoft.Web.WebView2.1.0.3351.48\build\Microsoft.Web.WebView2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

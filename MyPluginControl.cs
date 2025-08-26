@@ -17,7 +17,7 @@ namespace DataverseUserSecurity
         #region XRMToolBox Interfaces
 
         #region IGitHubPlugin implementation
-        public string RepositoryName => "XrmToolBox_DataverseUserSecurity";
+        public string RepositoryName => "DataverseUserSecurity";
         public string UserName => "ArunPotti";
         #endregion IGitHubPlugin implementation
 
@@ -27,7 +27,7 @@ namespace DataverseUserSecurity
         #endregion IPayPalPlugin implementation
 
         #region IHelpPlugin implementation
-        public string HelpUrl => "https://github.com/ArunPotti/XrmToolBox_DataverseUserSecurity";
+        public string HelpUrl => "https://github.com/ArunPotti/DataverseUserSecurity";
         #endregion
 
         #region IStatusBarMessenger implementation
@@ -96,10 +96,6 @@ namespace DataverseUserSecurity
 
             // Adjust the DataGridView height with some padding
             dgUsersData.Height = workingRectangle.Height - toolStripMenu.Height - lblRetrievedUsers.Height - 150;
-            
-            //// Position the label below the DataGridView
-            //lblRetrievedUsers.Top = dgUsersData.Bottom + 5; // 5 pixels below the DataGridView
-            //lblRetrievedUsers.Left = 10; // Align to the left with some padding
         }
 
         /// <summary>
@@ -194,6 +190,7 @@ namespace DataverseUserSecurity
                     RaiseStatusBarMessage("Started retrieving the Users data.");
                     LogInfo("Started retrieving the Users data.");
 
+                    // Get all the System Users
                     var allUsers = HelperClass.GetAllUsers(Service, pluginControl);
 
                     RaiseStatusBarMessage("Got all the Users data.");
@@ -202,6 +199,7 @@ namespace DataverseUserSecurity
                     RaiseStatusBarMessage("Started retreiving all the Teams data.");
                     LogInfo("Started retreiving all the Teams data.");
 
+                    // Get all the Teams
                     var allTeams = HelperClass.GetAllTeams(Service, pluginControl);
 
                     RaiseStatusBarMessage("Got all the Teams data.");
@@ -210,6 +208,7 @@ namespace DataverseUserSecurity
                     RaiseStatusBarMessage("Started retreiving all the Security Roles data.");
                     LogInfo("Started retreiving all the Security Roles data.");
 
+                    // Get all the Security Roles
                     var allSecurityRoles = HelperClass.GetAllSecurityRoles(Service, pluginControl);
 
                     RaiseStatusBarMessage("Got all the Security Roles data.");
@@ -218,10 +217,11 @@ namespace DataverseUserSecurity
                     RaiseStatusBarMessage("Started retrieving the User Roles, Teams and Teams Security Roles");
                     LogInfo("Started retrieving the User Roles, Teams and Teams Security Roles");
 
+                    // Get the User Data Table
                     args.Result = GetUserDataTable(Service, pluginControl, allUsers, allTeams, allSecurityRoles);
 
-                    RaiseStatusBarMessage("Got all the User Roles, Teams and Teams Security Roles.");
-                    LogInfo("Got all the User Roles, Teams and Teams Security Roles");
+                    RaiseStatusBarMessage("Retrieved all the User details, Security Roles, Teams and Teams Security Roles");
+                    LogInfo("Retrieved all the User details, Security Roles, Teams and Teams Security Roles");
                 },
                 PostWorkCallBack = (args) =>
                 {
@@ -458,6 +458,7 @@ namespace DataverseUserSecurity
                 // Define the columns for the DataTable
                 userDataTable.Columns.Add("User ID", typeof(Guid));
                 userDataTable.Columns.Add("Application ID", typeof(string));
+                userDataTable.Columns.Add("Azure AD Object Id", typeof(string));
                 userDataTable.Columns.Add("Full Name", typeof(string));
                 userDataTable.Columns.Add("Domain Name", typeof(string));
                 userDataTable.Columns.Add("Business Unit ID", typeof(string));
@@ -484,13 +485,17 @@ namespace DataverseUserSecurity
 
                     userCount = userCount + 1;
 
-                    HelperClass.LogInfoWithTimestamp(pluginControl, $"Processing User {userCount} of {userDataTableCount}");
+                    HelperClass.LogInfoWithTimestamp(pluginControl, $"Retrieving user {userCount} of {userDataTableCount}");
 
-                    RaiseStatusBarMessage($"Processing User {userCount} of {userDataTableCount}");
+                    RaiseStatusBarMessage($"Retrieving user {userCount} of {userDataTableCount}");
 
                     // Get the User Id
                     var userId = userEntity.GetAttributeValue<Guid>("systemuserid");
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User ID: {userId}");
+
+                    // Get the Azure AD Object Id
+                    var userAzureAdObjectId = userEntity.GetAttributeValue<Guid>("azureactivedirectoryobjectid") != Guid.Empty ? Convert.ToString(userEntity.GetAttributeValue<Guid>("azureactivedirectoryobjectid")) : "";
+                    HelperClass.LogInfoWithTimestamp(pluginControl, $"User Azure AD Object ID: {userAzureAdObjectId}");
 
                     // Get the User Full Name
                     var userFullName = userEntity.GetAttributeValue<string>("fullname");
@@ -560,6 +565,7 @@ namespace DataverseUserSecurity
                     userDataTable.Rows.Add(
                         userId,
                         userApplicationId,
+                        userAzureAdObjectId,
                         userFullName,
                         userDomainName,
                         userBusinessUnitId,

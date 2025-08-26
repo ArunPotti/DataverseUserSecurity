@@ -335,7 +335,7 @@ namespace DataverseUserSecurity.Helper
                 LogInfoWithTimestamp(pluginControl, $"Retrieving Users - Page Number: {pageNumber}");
                 var userQuery = new QueryExpression("systemuser")
                 {
-                    ColumnSet = new ColumnSet("systemuserid", "fullname", "domainname", "businessunitid", "isdisabled", "accessmode", "applicationid", "createdon", "createdby", "modifiedon", "modifiedby", "internalemailaddress"),
+                    ColumnSet = new ColumnSet("systemuserid", "azureactivedirectoryobjectid", "fullname", "domainname", "businessunitid", "isdisabled", "accessmode", "applicationid", "createdon", "createdby", "modifiedon", "modifiedby", "internalemailaddress"),
                     PageInfo = new PagingInfo
                     {
                         Count = 5000,
@@ -408,6 +408,7 @@ namespace DataverseUserSecurity.Helper
 
                 userDataTable.Columns.Add("User ID", typeof(Guid));
                 userDataTable.Columns.Add("Application ID", typeof(string));
+                userDataTable.Columns.Add("Azure AD Object Id", typeof(string));
                 userDataTable.Columns.Add("Full Name", typeof(string));
                 userDataTable.Columns.Add("Domain Name", typeof(string));
                 userDataTable.Columns.Add("Business Unit ID", typeof(string));
@@ -434,6 +435,10 @@ namespace DataverseUserSecurity.Helper
                     // Get the User Id
                     var userId = userEntity.GetAttributeValue<Guid>("systemuserid");
                     LogInfoWithTimestamp(pluginControl, $"User ID: {userId}");
+
+                    // Get the Azure AD Object Id
+                    var userAzureAdObjectId = userEntity.GetAttributeValue<string>("azureactivedirectoryobjectid") ?? string.Empty;
+                    LogInfoWithTimestamp(pluginControl, $"User Azure AD Object ID: {userAzureAdObjectId}");
 
                     // Get the User Full Name
                     var userFullName = userEntity.GetAttributeValue<string>("fullname");
@@ -502,6 +507,7 @@ namespace DataverseUserSecurity.Helper
                     userDataTable.Rows.Add(
                         userId,
                         userApplicationId,
+                        userAzureAdObjectId,
                         userFullName,
                         userDomainName,
                         userBusinessUnitId,

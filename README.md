@@ -8,7 +8,7 @@ An XrmToolBox plugin that helps administrators, developers, and auditors retriev
 
 This plugin provides a comprehensive view of Dataverse users and their access configurations, including:
 
-- 👤 User Details: `UserId`, `ApplicationId`, `Full Name`, `Email`, `User Status`, `Business Unit`, etc.
+- 👤 User Details: `UserId`, `ApplicationId`, `Full Name`, `Email`, `User Status`, `Business Unit`, `Azure AD Object ID` etc.
 - 🛡️ User Security Roles
 - 👥 User Teams
 - 🛡️ Team Security Roles

@@ -267,6 +267,7 @@
     <Content Include="Resources\close.png" />
     <Content Include="Resources\csv.png" />
     <Content Include="Resources\data-processing.png" />
+    <Content Include="Debug.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyPluginControl.resx">

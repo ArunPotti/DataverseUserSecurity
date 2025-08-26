@@ -1,0 +1,11 @@
+﻿
+BuildEvent: PostBuildEvent Command Line
+
+if $(ConfigurationName) == Debug (
+  IF NOT EXIST Plugins mkdir Plugins
+  move /Y DataverseUserSecurity.dll Plugins
+  move /Y DataverseUserSecurity.pdb Plugins
+)
+
+Debug: Command Line Arguments
+/overridepath:. /connection:”HCP Dev” /plugin:"Dataverse Users, Security roles, Teams and Teams security roles"

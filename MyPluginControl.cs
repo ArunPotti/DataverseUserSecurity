@@ -258,7 +258,7 @@ namespace DataverseUserSecurity
                     // Update the label with the total number of users retrieved
                     lblRetrievedUsers.Text = string.Concat(totalNumberOfUsersText, HelperClass.GetDataTableCount(dtUserData));
                     LogInfo("Total number of users retrieved: {0}", HelperClass.GetDataTableCount(dtUserData));
-                    ShowInfoNotification("All user details and security related information retrieved successfully",null);
+                    ShowInfoNotification("All user details and security related information retrieved successfully", null);
                 }
             });
 
@@ -438,6 +438,28 @@ namespace DataverseUserSecurity
         /// <returns>Returns User data table set</returns>
         private DataTable GetUserDataTable(IOrganizationService service, PluginControlBase pluginControl, List<Entity> userDataListEntity, Dictionary<Guid, string> allTeams, Dictionary<Guid, string> allSecurityRoles)
         {
+            // Initialize variables to hold user details
+            var userSecurityRoles = "";
+            var userTeams = "";
+            var userTeamsSecurityRoles = "";
+            var userId = "";
+            var userAzureAdObjectId = "";
+            var userFullName = "";
+            var userBusinessUnitId = "";
+            var userBusinessUnitName = "";
+            var isDisabled = false;
+            var userStatus = "";
+            var userAccessMode = "";
+            var userApplicationId = "";
+            var userDomainName = "";
+            var userCreatedOn = "";
+            var userCreatedBy = "";
+            var userModifiedOn = "";
+            var userModifiedBy = "";
+            var userPrimaryEmail = "";
+            EntityReference userBusinessUnit = null;
+            List<Guid> allUserTeamIds = null;
+
             pluginControl.LogInfo("-----------------------------------------");
             HelperClass.LogInfoWithTimestamp(pluginControl, "Entered into GetUserDataTable Method");
 
@@ -490,75 +512,91 @@ namespace DataverseUserSecurity
                     RaiseStatusBarMessage($"Retrieving user {userCount} of {userDataTableCount}");
 
                     // Get the User Id
-                    var userId = userEntity.GetAttributeValue<Guid>("systemuserid");
+                    userId = userEntity.GetAttributeValue<Guid?>("systemuserid")?.ToString() ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User ID: {userId}");
 
                     // Get the Azure AD Object Id
-                    var userAzureAdObjectId = userEntity.GetAttributeValue<Guid>("azureactivedirectoryobjectid") != Guid.Empty ? Convert.ToString(userEntity.GetAttributeValue<Guid>("azureactivedirectoryobjectid")) : "";
+                    userAzureAdObjectId = userEntity.GetAttributeValue<Guid?>("azureactivedirectoryobjectid") != null && userEntity.GetAttributeValue<Guid>("azureactivedirectoryobjectid") != Guid.Empty
+                        ? userEntity.GetAttributeValue<Guid>("azureactivedirectoryobjectid").ToString()
+                        : string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Azure AD Object ID: {userAzureAdObjectId}");
 
                     // Get the User Full Name
-                    var userFullName = userEntity.GetAttributeValue<string>("fullname");
+                    userFullName = userEntity.GetAttributeValue<string>("fullname") ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Full Name: {userFullName}");
 
                     // Get the User Business Unit
-                    var userBusinessUnit = userEntity.GetAttributeValue<EntityReference>("businessunitid");
+                    userBusinessUnit = null;
+                    userBusinessUnit = userEntity.GetAttributeValue<EntityReference>("businessunitid");
 
                     // Get the User Business Unit Id
-                    var userBusinessUnitId = userBusinessUnit != null ? userBusinessUnit.Id.ToString() : "";
+                    userBusinessUnitId = userBusinessUnit?.Id.ToString() ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Business Unit ID: {userBusinessUnitId}");
 
                     // Get the Business Unit Name
-                    var userBusinessUnitName = userBusinessUnit != null ? userBusinessUnit.Name : string.Empty;
+                    userBusinessUnitName = userBusinessUnit?.Name ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Business Unit Name: {userBusinessUnitName}");
 
                     // Get the User status 
-                    var isDisabled = userEntity.Contains("isdisabled") ? userEntity.GetAttributeValue<bool>("isdisabled") : false;
-                    var userStatus = isDisabled ? "Disabled" : "Enabled";
+                    isDisabled = userEntity.Contains("isdisabled") && userEntity.GetAttributeValue<bool?>("isdisabled") == true;
+                    userStatus = isDisabled ? "Disabled" : "Enabled";
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Status: {userStatus}");
 
                     // Get the User Access Mode
-                    var userAccessMode = userEntity.FormattedValues["accessmode"].ToString();
+                    userAccessMode = userEntity.FormattedValues != null && userEntity.FormattedValues.ContainsKey("accessmode")
+                        ? userEntity.FormattedValues["accessmode"] ?? string.Empty
+                        : string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Access Mode: {userAccessMode}");
 
                     // Check for Application Id
-                    var userApplicationId = userEntity.GetAttributeValue<Guid>("applicationid") != Guid.Empty ? Convert.ToString(userEntity.GetAttributeValue<Guid>("applicationid")) : "";
+                    userApplicationId = userEntity.GetAttributeValue<Guid?>("applicationid") != null && userEntity.GetAttributeValue<Guid>("applicationid") != Guid.Empty
+                        ? userEntity.GetAttributeValue<Guid>("applicationid").ToString()
+                        : string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Application ID: {userApplicationId}");
 
                     // Get the User Domain Name
-                    var userDomainName = userEntity.GetAttributeValue<string>("domainname") ?? string.Empty;
+                    userDomainName = userEntity.GetAttributeValue<string>("domainname") ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Domain Name: {userDomainName}");
 
                     // Get the Created On date
-                    var userCreatedOn = userEntity.GetAttributeValue<DateTime>("createdon");
+                    userCreatedOn = userEntity.GetAttributeValue<DateTime?>("createdon")?.ToString() ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Created On: {userCreatedOn}");
 
                     // Get the Created By user
-                    var userCreatedBy = userEntity.GetAttributeValue<EntityReference>("createdby") != null ? userEntity.GetAttributeValue<EntityReference>("createdby").Name : string.Empty;
+                    var createdByRef = userEntity.GetAttributeValue<EntityReference>("createdby");
+                    userCreatedBy = createdByRef?.Name ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Created By: {userCreatedBy}");
 
                     // Get the Modified On date
-                    var userModifiedOn = userEntity.GetAttributeValue<DateTime>("modifiedon");
+                    userModifiedOn = userEntity.GetAttributeValue<DateTime?>("modifiedon")?.ToString() ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Modified On: {userModifiedOn}");
 
                     // Get the Modified By user
-                    var userModifiedBy = userEntity.GetAttributeValue<EntityReference>("modifiedby") != null ? userEntity.GetAttributeValue<EntityReference>("modifiedby").Name : string.Empty;
+                    var modifiedByRef = userEntity.GetAttributeValue<EntityReference>("modifiedby");
+                    userModifiedBy = modifiedByRef?.Name ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Modified By: {userModifiedBy}");
 
                     // Get the Primary Email
-                    var userPrimaryEmail = userEntity.GetAttributeValue<string>("internalemailaddress") ?? string.Empty;
+                    userPrimaryEmail = userEntity.GetAttributeValue<string>("internalemailaddress") ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Primary Email: {userPrimaryEmail}");
 
                     // Get the User Security Roles
-                    var userSecurityRoles = HelperClass.GetUserSecurityRoles(service, pluginControl, userId, allSecurityRoles);
+                    userSecurityRoles = string.Empty;
+                    userSecurityRoles = HelperClass.GetUserSecurityRoles(service, pluginControl, userId, allSecurityRoles) ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Security Roles: {userSecurityRoles}");
 
+                    // Get all the User Teams Ids
+                    allUserTeamIds = null;
+                    allUserTeamIds = HelperClass.GetUserAllTeamIds(service, pluginControl, userId, allTeams);
+
                     // Get the User Teams
-                    var userTeams = HelperClass.GetUserAllTeamNames(service, pluginControl, HelperClass.GetUserAllTeamIds(service, pluginControl, userId, allTeams), allTeams);
+                    userTeams = string.Empty;
+                    userTeams = HelperClass.GetUserAllTeamNames(service, pluginControl, allUserTeamIds, allTeams) ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Teams: {userTeams}");
 
                     // Get the User Teams Security Roles
-                    var userTeamsSecurityRoles = HelperClass.GetTeamSecurityRoles(service, pluginControl, userId, allSecurityRoles);
+                    userTeamsSecurityRoles = string.Empty;
+                    userTeamsSecurityRoles = HelperClass.GetTeamSecurityRoles(service, pluginControl, allUserTeamIds, allSecurityRoles) ?? string.Empty;
                     HelperClass.LogInfoWithTimestamp(pluginControl, $"User Teams Security Roles: {userTeamsSecurityRoles}");
 
                     // Add the user data to the DataTable

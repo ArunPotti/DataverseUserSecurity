@@ -10,7 +10,7 @@ using XrmToolBox.Extensibility;
 
 namespace DataverseUserSecurity.Helper
 {
-    public class HelperClass: PluginControlBase
+    public class HelperClass : PluginControlBase
     {
         /// <summary>
         /// Get Team Security Roles
@@ -20,7 +20,7 @@ namespace DataverseUserSecurity.Helper
         /// <param name="teamId">Team Id</param>
         /// <param name="rolesDict">Roles Dictionary</param>
         /// <returns>Returns Team Security Roles in a string separated by ;</returns>
-        public static string GetTeamSecurityRoles(IOrganizationService service, PluginControlBase pluginControl, Guid teamId, Dictionary<Guid, string> rolesDict)
+        public static string GetTeamSecurityRolesBasedonTeamId(IOrganizationService service, PluginControlBase pluginControl, Guid teamId, Dictionary<Guid, string> rolesDict)
         {
             pluginControl.LogInfo("-----------------------------------------");
 
@@ -80,6 +80,37 @@ namespace DataverseUserSecurity.Helper
         }
 
         /// <summary>
+        /// Get Team Security Roles for multiple teams
+        /// </summary>
+        /// <param name="service"></param>
+        /// <param name="pluginControl"></param>
+        /// <param name="teamIds"></param>
+        /// <param name="securityRoles"></param>
+        /// <returns></returns>
+        public static string GetTeamSecurityRoles(IOrganizationService service, PluginControlBase pluginControl, List<Guid> teamIds, Dictionary<Guid, string> securityRoles)
+        {
+            string teamSecurityRoles = string.Empty;
+
+            // Iterate through each team ID and accumulate their security roles
+            foreach (var teamId in teamIds)
+            {
+                // Get roles for the current team
+                var roles = GetTeamSecurityRolesBasedonTeamId(service, pluginControl, teamId, securityRoles);
+
+                // Append roles to the cumulative string if not empty
+                if (!string.IsNullOrEmpty(roles))
+                {
+                    teamSecurityRoles += roles + "; ";
+                }
+            }
+
+            // Remove trailing semicolon and space
+            teamSecurityRoles = teamSecurityRoles.TrimEnd(';', ' ');
+
+            return teamSecurityRoles;
+        }
+
+        /// <summary>
         /// Get all the Security Roles in the system
         /// </summary>
         /// <param name="service">Iorganization service</param>
@@ -127,7 +158,7 @@ namespace DataverseUserSecurity.Helper
         /// <param name="userId">User id</param>
         /// <param name="teamsDict">Team Dictionary</param>
         /// <returns>Returns all the user team Ids in list</returns>
-        public static List<Guid> GetUserAllTeamIds(IOrganizationService service, PluginControlBase pluginControl, Guid userId, Dictionary<Guid, string> teamsDict)
+        public static List<Guid> GetUserAllTeamIds(IOrganizationService service, PluginControlBase pluginControl, string userId, Dictionary<Guid, string> teamsDict)
         {
             pluginControl.LogInfo("-----------------------------------------");
             LogInfoWithTimestamp(pluginControl, "Entered into GetUserAllTeamIds Method");
@@ -156,7 +187,7 @@ namespace DataverseUserSecurity.Helper
                 teamId = membership.GetAttributeValue<Guid>("teamid");
 
                 LogInfoWithTimestamp(pluginControl, $"Team ID: {teamId.ToString()}");
-                
+
                 teams.Add(teamId);
             }
 
@@ -249,7 +280,7 @@ namespace DataverseUserSecurity.Helper
                 if (results.MoreRecords)
                 {
                     LogInfoWithTimestamp(pluginControl, "More records found, preparing to retrieve next page.");
-                    
+
                     query.PageInfo.PageNumber++;
                     query.PageInfo.PagingCookie = results.PagingCookie;
                 }
@@ -271,7 +302,7 @@ namespace DataverseUserSecurity.Helper
         /// <param name="userId">User Guid</param>
         /// <param name="rolesDict">Roles Dictionary</param>
         /// <returns>Returns the Security roles in a string separated by ;</returns>
-        public static string GetUserSecurityRoles(IOrganizationService service, PluginControlBase pluginControl, Guid userId, Dictionary<Guid, string> rolesDict)
+        public static string GetUserSecurityRoles(IOrganizationService service, PluginControlBase pluginControl, string userId, Dictionary<Guid, string> rolesDict)
         {
             pluginControl.LogInfo("-----------------------------------------");
             LogInfoWithTimestamp(pluginControl, "Entered into GetUserSecurityRoles Method");
@@ -376,164 +407,6 @@ namespace DataverseUserSecurity.Helper
         public static string GetDataTableCount(DataTable dt)
         {
             return dt.Rows.Count.ToString();
-        }
-
-        /// <summary>
-        /// Retrieves user data and populates a DataTable with user details, including security roles, team and team security roles information.
-        /// </summary>
-        /// <param name="service">IOrganization Service</param>
-        /// <param name="pluginControl">Plugin Control Base</param>
-        /// <param name="userDataListEntity">All System users data</param>
-        /// <param name="allTeams">All Teams data</param>
-        /// <param name="allSecurityRoles">All Security roles data</param>
-        /// <returns>Returns User data table set</returns>
-        public static DataTable GetUserDataTable(IOrganizationService service, PluginControlBase pluginControl, List<Entity> userDataListEntity, Dictionary<Guid, string> allTeams, Dictionary<Guid, string> allSecurityRoles)
-        {
-            pluginControl.LogInfo("-----------------------------------------");
-            LogInfoWithTimestamp(pluginControl, "Entered into GetUserDataTable Method");
-
-            int userCount = 0, 
-                userDataTableCount = 0;
-
-            DataTable userDataTable = new DataTable();
-
-            LogInfoWithTimestamp(pluginControl, "Processing User(s)");
-
-            if (userDataListEntity != null)
-            {
-                // Get the Users List Total count
-                userDataTableCount = userDataListEntity.Count;
-
-                LogInfoWithTimestamp(pluginControl, $"Total Users to be processed: {userDataTableCount}");
-
-                userDataTable.Columns.Add("User ID", typeof(Guid));
-                userDataTable.Columns.Add("Application ID", typeof(string));
-                userDataTable.Columns.Add("Azure AD Object Id", typeof(string));
-                userDataTable.Columns.Add("Full Name", typeof(string));
-                userDataTable.Columns.Add("Domain Name", typeof(string));
-                userDataTable.Columns.Add("Business Unit ID", typeof(string));
-                userDataTable.Columns.Add("Business Unit Name", typeof(string));
-                userDataTable.Columns.Add("Primary Email", typeof(string)); // This is the
-                userDataTable.Columns.Add("Is Disabled", typeof(string));
-                userDataTable.Columns.Add("Access Mode", typeof(string));
-                userDataTable.Columns.Add("User Security Roles", typeof(string));
-                userDataTable.Columns.Add("User Teams", typeof(string));
-                userDataTable.Columns.Add("Teams Security Roles", typeof(string));
-                userDataTable.Columns.Add("Created on", typeof(DateTime));
-                userDataTable.Columns.Add("Created by", typeof(string));
-                userDataTable.Columns.Add("Modified on", typeof(DateTime));
-                userDataTable.Columns.Add("Modified by", typeof(string));
-
-                LogInfoWithTimestamp(pluginControl, "Populating User Data Table");
-
-                pluginControl.LogInfo("*-----------------------------------------*");
-                foreach (var userEntity in userDataListEntity)
-                {
-                    pluginControl.LogInfo("-----------------------------------------");
-                    LogInfoWithTimestamp(pluginControl, $"Processing User {++userCount} of {userDataTableCount}");
-
-                    // Get the User Id
-                    var userId = userEntity.GetAttributeValue<Guid>("systemuserid");
-                    LogInfoWithTimestamp(pluginControl, $"User ID: {userId}");
-
-                    // Get the Azure AD Object Id
-                    var userAzureAdObjectId = userEntity.GetAttributeValue<string>("azureactivedirectoryobjectid") ?? string.Empty;
-                    LogInfoWithTimestamp(pluginControl, $"User Azure AD Object ID: {userAzureAdObjectId}");
-
-                    // Get the User Full Name
-                    var userFullName = userEntity.GetAttributeValue<string>("fullname");
-                    LogInfoWithTimestamp(pluginControl, $"User Full Name: {userFullName}");
-
-                    // Get the User Business Unit
-                    var userBusinessUnit = userEntity.GetAttributeValue<EntityReference>("businessunitid");
-
-                    // Get the User Business Unit Id
-                    var userBusinessUnitId = userBusinessUnit != null ? userBusinessUnit.Id.ToString() : "";
-                    LogInfoWithTimestamp(pluginControl, $"User Business Unit ID: {userBusinessUnitId}");
-
-                    // Get the Business Unit Name
-                    var userBusinessUnitName = userBusinessUnit != null ? userBusinessUnit.Name : string.Empty;
-                    LogInfoWithTimestamp(pluginControl, $"User Business Unit Name: {userBusinessUnitName}");
-
-                    // Get the User status 
-                    var isDisabled = userEntity.Contains("isdisabled") ? userEntity.GetAttributeValue<bool>("isdisabled") : false;
-                    var userStatus = isDisabled ? "Disabled" : "Enabled";
-                    LogInfoWithTimestamp(pluginControl, $"User Status: {userStatus}");
-
-                    // Get the User Access Mode
-                    var userAccessMode = userEntity.FormattedValues["accessmode"].ToString();
-                    LogInfoWithTimestamp(pluginControl, $"User Access Mode: {userAccessMode}");
-
-                    // Check for Application Id
-                    var userApplicationId = userEntity.GetAttributeValue<Guid>("applicationid") != Guid.Empty ? Convert.ToString(userEntity.GetAttributeValue<Guid>("applicationid")) : "";
-                    LogInfoWithTimestamp(pluginControl, $"User Application ID: {userApplicationId}");
-
-                    // Get the User Domain Name
-                    var userDomainName = userEntity.GetAttributeValue<string>("domainname") ?? string.Empty;
-                    LogInfoWithTimestamp(pluginControl, $"User Domain Name: {userDomainName}");
-
-                    // Get the Created On date
-                    var userCreatedOn = userEntity.GetAttributeValue<DateTime>("createdon");
-                    LogInfoWithTimestamp(pluginControl, $"User Created On: {userCreatedOn}");
-
-                    // Get the Created By user
-                    var userCreatedBy = userEntity.GetAttributeValue<EntityReference>("createdby") != null ? userEntity.GetAttributeValue<EntityReference>("createdby").Name : string.Empty;
-                    LogInfoWithTimestamp(pluginControl, $"User Created By: {userCreatedBy}");
-
-                    // Get the Modified On date
-                    var userModifiedOn = userEntity.GetAttributeValue<DateTime>("modifiedon");
-                    LogInfoWithTimestamp(pluginControl, $"User Modified On: {userModifiedOn}");
-
-                    // Get the Modified By user
-                    var userModifiedBy = userEntity.GetAttributeValue<EntityReference>("modifiedby") != null ? userEntity.GetAttributeValue<EntityReference>("modifiedby").Name : string.Empty;
-                    LogInfoWithTimestamp(pluginControl, $"User Modified By: {userModifiedBy}");
-
-                    // Get the Primary Email
-                    var userPrimaryEmail = userEntity.GetAttributeValue<string>("internalemailaddress") ?? string.Empty;
-                    LogInfoWithTimestamp(pluginControl, $"User Primary Email: {userPrimaryEmail}");
-
-                    // Get the User Security Roles
-                    var userSecurityRoles = GetUserSecurityRoles(service, pluginControl, userId, allSecurityRoles);
-                    LogInfoWithTimestamp(pluginControl, $"User Security Roles: {userSecurityRoles}");
-
-                    // Get the User Teams
-                    var userTeams = GetUserAllTeamNames(service,pluginControl, GetUserAllTeamIds(service, pluginControl, userId, allTeams), allTeams);
-                    LogInfoWithTimestamp(pluginControl, $"User Teams: {userTeams}");
-
-                    // Get the User Teams Security Roles
-                    var userTeamsSecurityRoles = GetTeamSecurityRoles(service, pluginControl, userId, allSecurityRoles);
-                    LogInfoWithTimestamp(pluginControl, $"User Teams Security Roles: {userTeamsSecurityRoles}");
-
-                    userDataTable.Rows.Add(
-                        userId,
-                        userApplicationId,
-                        userAzureAdObjectId,
-                        userFullName,
-                        userDomainName,
-                        userBusinessUnitId,
-                        userBusinessUnitName,
-                        userPrimaryEmail,
-                        userStatus,
-                        userAccessMode,
-                        userSecurityRoles,
-                        userTeams,
-                        userTeamsSecurityRoles,
-                        userCreatedOn,
-                        userCreatedBy,
-                        userModifiedOn,
-                        userModifiedBy
-                    );
-
-                    LogInfoWithTimestamp(pluginControl, $"User {userFullName} added to Data Table" );
-                    pluginControl.LogInfo("-----------------------------------------");
-                }
-            }
-
-            LogInfoWithTimestamp(pluginControl, $"Total Users processed and added to Data Table: {userCount}");
-            LogInfoWithTimestamp(pluginControl, "Exiting from GetUserDataTable Method");
-            pluginControl.LogInfo("-----------------------------------------");
-
-            return userDataTable;
         }
 
         /// <summary>

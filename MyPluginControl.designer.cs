@@ -30,16 +30,17 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MyPluginControl));
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
-            this.tsbClose = new System.Windows.Forms.ToolStripButton();
-            this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbLoadData = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbLblSearch = new System.Windows.Forms.ToolStripLabel();
             this.tsbTxtSearch = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbExport = new System.Windows.Forms.ToolStripButton();
+            this.tsbSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dgUsersData = new System.Windows.Forms.DataGridView();
             this.lblRetrievedUsers = new System.Windows.Forms.Label();
+            this.tsbClose = new System.Windows.Forms.ToolStripButton();
+            this.tsbLoadData = new System.Windows.Forms.ToolStripButton();
+            this.tsbExport = new System.Windows.Forms.ToolStripButton();
+            this.tsbArunPottiLogo = new System.Windows.Forms.ToolStripButton();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgUsersData)).BeginInit();
             this.SuspendLayout();
@@ -49,72 +50,47 @@
             this.toolStripMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.toolStripMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbClose,
-            this.tssSeparator1,
+            this.tsbSeparator1,
             this.tsbLoadData,
-            this.toolStripSeparator1,
+            this.tsbSeparator2,
             this.tsbLblSearch,
             this.tsbTxtSearch,
-            this.toolStripSeparator2,
-            this.tsbExport});
+            this.tsbSeparator3,
+            this.tsbExport,
+            this.tsbArunPottiLogo});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(1991, 34);
+            this.toolStripMenu.Size = new System.Drawing.Size(1991, 38);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
-            // tsbClose
+            // tsbSeparator1
             // 
-            this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
-            this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(83, 29);
-            this.tsbClose.Text = "Close";
-            this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
+            this.tsbSeparator1.Name = "tsbSeparator1";
+            this.tsbSeparator1.Size = new System.Drawing.Size(6, 38);
             // 
-            // tssSeparator1
+            // tsbSeparator2
             // 
-            this.tssSeparator1.Name = "tssSeparator1";
-            this.tssSeparator1.Size = new System.Drawing.Size(6, 34);
-            // 
-            // tsbLoadData
-            // 
-            this.tsbLoadData.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoadData.Image")));
-            this.tsbLoadData.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbLoadData.Name = "tsbLoadData";
-            this.tsbLoadData.Size = new System.Drawing.Size(121, 29);
-            this.tsbLoadData.Text = "Load Data";
-            this.tsbLoadData.Click += new System.EventHandler(this.tsbLoadData_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 34);
+            this.tsbSeparator2.Name = "tsbSeparator2";
+            this.tsbSeparator2.Size = new System.Drawing.Size(6, 38);
             // 
             // tsbLblSearch
             // 
             this.tsbLblSearch.Name = "tsbLblSearch";
-            this.tsbLblSearch.Size = new System.Drawing.Size(64, 29);
+            this.tsbLblSearch.Size = new System.Drawing.Size(64, 33);
             this.tsbLblSearch.Text = "Search";
             // 
             // tsbTxtSearch
             // 
             this.tsbTxtSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbTxtSearch.Name = "tsbTxtSearch";
-            this.tsbTxtSearch.Size = new System.Drawing.Size(400, 34);
+            this.tsbTxtSearch.Size = new System.Drawing.Size(400, 38);
             this.tsbTxtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tsbTxtSearch_KeyUp);
             // 
-            // toolStripSeparator2
+            // tsbSeparator3
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 34);
-            // 
-            // tsbExport
-            // 
-            this.tsbExport.Image = ((System.Drawing.Image)(resources.GetObject("tsbExport.Image")));
-            this.tsbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbExport.Name = "tsbExport";
-            this.tsbExport.Size = new System.Drawing.Size(91, 29);
-            this.tsbExport.Text = "Export";
-            this.tsbExport.Click += new System.EventHandler(this.tsbExport_Click);
+            this.tsbSeparator3.Name = "tsbSeparator3";
+            this.tsbSeparator3.Size = new System.Drawing.Size(6, 38);
             // 
             // dgUsersData
             // 
@@ -137,6 +113,43 @@
             this.lblRetrievedUsers.TabIndex = 9;
             this.lblRetrievedUsers.Text = "Total number of users retrieved : 0";
             // 
+            // tsbClose
+            // 
+            this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
+            this.tsbClose.Name = "tsbClose";
+            this.tsbClose.Size = new System.Drawing.Size(83, 33);
+            this.tsbClose.Text = "Close";
+            this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
+            // 
+            // tsbLoadData
+            // 
+            this.tsbLoadData.Image = ((System.Drawing.Image)(resources.GetObject("tsbLoadData.Image")));
+            this.tsbLoadData.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbLoadData.Name = "tsbLoadData";
+            this.tsbLoadData.Size = new System.Drawing.Size(121, 33);
+            this.tsbLoadData.Text = "Load Data";
+            this.tsbLoadData.Click += new System.EventHandler(this.tsbLoadData_Click);
+            // 
+            // tsbExport
+            // 
+            this.tsbExport.Image = ((System.Drawing.Image)(resources.GetObject("tsbExport.Image")));
+            this.tsbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbExport.Name = "tsbExport";
+            this.tsbExport.Size = new System.Drawing.Size(91, 33);
+            this.tsbExport.Text = "Export";
+            this.tsbExport.Click += new System.EventHandler(this.tsbExport_Click);
+            // 
+            // tsbArunPottiLogo
+            // 
+            this.tsbArunPottiLogo.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.tsbArunPottiLogo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbArunPottiLogo.Image = global::DataverseUserSecurity.Properties.Resources.Arun_Potti_Logo_80X80;
+            this.tsbArunPottiLogo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbArunPottiLogo.Name = "tsbArunPottiLogo";
+            this.tsbArunPottiLogo.Size = new System.Drawing.Size(34, 33);
+            this.tsbArunPottiLogo.Text = "Arun Potti\'s Website";
+            this.tsbArunPottiLogo.Click += new System.EventHandler(this.tsbArunPottiLogo_Click);
+            // 
             // MyPluginControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -150,6 +163,7 @@
             this.Name = "MyPluginControl";
             this.Size = new System.Drawing.Size(1991, 845);
             this.Load += new System.EventHandler(this.MyPluginControl_Load);
+            this.Resize += new System.EventHandler(this.MyPluginControl_Resize);
             this.toolStripMenu.ResumeLayout(false);
             this.toolStripMenu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgUsersData)).EndInit();
@@ -161,14 +175,15 @@
         #endregion
         private System.Windows.Forms.ToolStrip toolStripMenu;
         private System.Windows.Forms.ToolStripButton tsbClose;
-        private System.Windows.Forms.ToolStripSeparator tssSeparator1;
+        private System.Windows.Forms.ToolStripSeparator tsbSeparator1;
         private System.Windows.Forms.ToolStripButton tsbLoadData;
         private System.Windows.Forms.ToolStripButton tsbExport;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator tsbSeparator2;
         private System.Windows.Forms.DataGridView dgUsersData;
         private System.Windows.Forms.Label lblRetrievedUsers;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator tsbSeparator3;
         private System.Windows.Forms.ToolStripLabel tsbLblSearch;
         private System.Windows.Forms.ToolStripTextBox tsbTxtSearch;
+        private System.Windows.Forms.ToolStripButton tsbArunPottiLogo;
     }
 }

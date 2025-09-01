@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Windows.Forms;
-using DataverseUserSecurity.Helper;
+﻿using DataverseUserSecurity.Helper;
 using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Forms;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Args;
 using XrmToolBox.Extensibility.Interfaces;
@@ -54,6 +55,9 @@ namespace DataverseUserSecurity
             InitializeComponent();
 
             pluginControl = this;
+
+            // Event handler for control load
+            this.Resize += new System.EventHandler(this.MyPluginControl_Resize);
         }
 
         /// <summary>
@@ -177,13 +181,13 @@ namespace DataverseUserSecurity
         {
             LogInfo("-------------------------------");
             LogInfo("Call LoadData Method");
-            LogInfo("Retrieving All System Users, Security Roles, Teams, Team Security Roles. Please wait...");
+            LogInfo("Retrieving all System user details, Security roles, Teams, Team security roles. Please wait...");
 
             DataTable userDt = new DataTable();
 
             WorkAsync(new WorkAsyncInfo
             {
-                Message = "Retrieving System Users, Security Roles, Teams, Team Security Roles. Please wait...",
+                Message = "Retrieving all System user details, Security roles, Teams, Team security roles. Please wait...",
                 AsyncArgument = null,
                 Work = (worker, args) =>
                 {
@@ -206,22 +210,22 @@ namespace DataverseUserSecurity
                     LogInfo("Got all the Teams data.");
 
                     RaiseStatusBarMessage("Started retreiving all the Security Roles data.");
-                    LogInfo("Started retreiving all the Security Roles data.");
+                    LogInfo("Started retreiving all the Security roles data.");
 
                     // Get all the Security Roles
                     var allSecurityRoles = HelperClass.GetAllSecurityRoles(Service, pluginControl);
 
-                    RaiseStatusBarMessage("Got all the Security Roles data.");
+                    RaiseStatusBarMessage("Got all the Security roles data.");
                     LogInfo("Got all the Security Roles data.");
 
-                    RaiseStatusBarMessage("Started retrieving the User Roles, Teams and Teams Security Roles");
-                    LogInfo("Started retrieving the User Roles, Teams and Teams Security Roles");
+                    RaiseStatusBarMessage("Started retrieving the User roles, Teams and Teams security roles");
+                    LogInfo("Started retrieving the User roles, Teams and Teams security roles");
 
                     // Get the User Data Table
                     args.Result = GetUserDataTable(Service, pluginControl, allUsers, allTeams, allSecurityRoles);
 
-                    RaiseStatusBarMessage("Retrieved all the User details, Security Roles, Teams and Teams Security Roles");
-                    LogInfo("Retrieved all the User details, Security Roles, Teams and Teams Security Roles");
+                    RaiseStatusBarMessage("Retrieved all the User details, Security roles, Teams and Teams security roles");
+                    LogInfo("Retrieved all the User details, Security roles, Teams and Teams security roles");
                 },
                 PostWorkCallBack = (args) =>
                 {
@@ -425,6 +429,40 @@ namespace DataverseUserSecurity
         {
             // Invoke the event to send the message to the status bar
             SendMessageToStatusBar?.Invoke(this, new StatusBarMessageEventArgs(message));
+        }
+
+        /// <summary>
+        /// Resizes the DataGridView when the control is resized.
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="e">Event Arguments/param>
+        private void MyPluginControl_Resize(object sender, EventArgs e)
+        {
+            // Adjust the DataGridView width 
+            dgUsersData.Width = this.ClientSize.Width; // Adjust width with some padding
+
+            // Adjust the DataGridView height with some padding
+            dgUsersData.Height = this.ClientSize.Height - toolStripMenu.Height - lblRetrievedUsers.Height - 20;
+        }
+
+        /// <summary>
+        /// On Click on Arun Potti Logo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tsbArunPottiLogo_Click(object sender, EventArgs e)
+        {
+            string url = "https://arunpotti.com"; // Replace with your desired URL
+
+            try
+            {
+                Process.Start(url);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not open link: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
 
         /// <summary>
